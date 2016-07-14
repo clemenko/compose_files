@@ -1,0 +1,16 @@
+version: "2"
+services:
+  app:
+    image: orient
+    ports:
+      - 5000:5000
+    depends on:
+      - mysql
+      - redis
+  mysql:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=Pa22word
+  redis:
+    restart: 'always'
+    image: redis

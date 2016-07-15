@@ -1,16 +1,16 @@
 version: "2"
 services:
   app:
-    image: orient
+    image: clemenko/orient_flask
+    restart: unless-stopped
     ports:
       - 5000:5000
-    depends on:
-      - mysql
+    depends_on:
+      - mongo
       - redis
-  mysql:
-    image: mariadb
-    environment:
-      - MYSQL_ROOT_PASSWORD=Pa22word
+  mongo:
+    image: mongo
+    restart: unless-stopped
   redis:
-    restart: 'always'
+    restart: unless-stopped
     image: redis

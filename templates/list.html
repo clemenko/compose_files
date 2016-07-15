@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Docker Flask/Redis/Mongo</title>
+    <title>Docker Flask/Redis/Mongo - list</title>
     <style>
     body  {
       background-image: url("/static/rancheros_hero.png");
@@ -18,8 +18,12 @@
     <h1>Worlds greatest Docker Flask/Redis/Mysql DEMO!. </h1>
     <h1> Version 2.0 </h1>
     <h2>There have been {{hits}} hits.</h2>
-    <h2>server : {{ server_name }} <br>
-      Your ip : {{ ip }}</h2>
+    <h2>server : {{ server_name }}</h2>
+    <h2>Visitor ip list :</h2>
+    {% for item in items %}
+      {{ item.ip }} <br>
+    {% endfor %}
+      </p>
     <p>Contact me at : <a href="mailto:clemenko@docker.com">clemenko@docker.com</a>.</p>
 </div>
 </body>

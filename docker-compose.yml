@@ -3,14 +3,31 @@ services:
   app:
     image: clemenko/orient_flask
     restart: unless-stopped
+    networks:
+      orientation:
     ports:
       - 5000:5000
     depends_on:
       - mongo
       - redis
+    environment:
+      - "info.andyc.role=flask"
+      - "affinity:info.andyc.role==redis"
+      - "affinity:info.andyc.role==mongo"
   mongo:
     image: mongo
     restart: unless-stopped
+    networks:
+      orientation:
+    environment:
+      - "info.andyc.role=mongo"
+      - "affinity:info.andyc.role==redis"
   redis:
     restart: unless-stopped
     image: redis
+    networks:
+      orientation:
+    environment:
+      - "info.andyc.role=redis"
+networks:
+  orientation:

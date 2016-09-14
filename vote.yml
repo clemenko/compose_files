@@ -1,0 +1,29 @@
+version: "2"
+
+services:
+  voting-app:
+    image: nicolaka/voting-app:latest
+    ports:
+      - "80"
+    labels:
+     interlock.hostname: "vote"
+     interlock.domain:   "example.com"
+  result-app:
+    image: nicolaka/result-app:latest
+    ports:
+      - "80"
+    labels:
+     interlock.hostname: "result"
+     interlock.domain:   "example.com"
+  worker:
+    image: nicolaka/worker:latest
+  redis:
+    image: redis
+    ports:
+      - "6379"
+    container_name: redis
+
+  db:
+    image: postgres:9.4
+    container_name: db
+

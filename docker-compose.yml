@@ -1,7 +1,7 @@
 version: "2"
 services:
   app:
-    image: clemenko/orient_flask
+    image: flask
     restart: unless-stopped
     networks:
       orientation:
@@ -10,24 +10,15 @@ services:
     depends_on:
       - mongo
       - redis
-    environment:
-      - "info.andyc.role=flask"
-      - "affinity:info.andyc.role==redis"
-      - "affinity:info.andyc.role==mongo"
   mongo:
     image: mongo
     restart: unless-stopped
     networks:
       orientation:
-    environment:
-      - "info.andyc.role=mongo"
-      - "affinity:info.andyc.role==redis"
   redis:
     restart: unless-stopped
     image: redis
     networks:
       orientation:
-    environment:
-      - "info.andyc.role=redis"
 networks:
   orientation:

@@ -1,0 +1,81 @@
+version: "3.1"
+services:
+  app:
+    image: clemenko/flask_demo:secret
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+      mode: replicated
+      placement:
+        constraints:
+          - node.role == worker
+      labels:
+          com.docker.ucp.access.label: "prod"
+          com.docker.ucp.mesh.http.5000: "external_route=http://flask.shirtmullet.com,internal_port=5000"
+    networks:
+      db:
+      kv:
+      ucp-hrm:
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongo
+      - redis
+    secrets:
+      - source: demo_title_v1
+        target: demo_title
+        uid: "0"
+        gid: "0"
+        mode: 0400
+
+  mongo:
+    image: mongo
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      db:
+
+  redis:
+    image: redis
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      kv:
+
+  cockroach:
+    image: cockroachdb/cockroach
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+    ports:
+      - 8090:8080
+    command: start --insecure
+    networks:
+      db:
+
+  visualizer:
+    image: manomarks/visualizer
+    ports:
+      - 8080:8080
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  kv:
+  db:
+  ucp-hrm:
+    external: true
+
+secrets:
+  demo_title_v1:
+    external: true

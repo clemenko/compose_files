@@ -1,6 +1,0 @@
-version: "2"
-services:
-  jenkins:
-    image: jenkins:2.7.1-alpine
-    ports:
-      - 8080:8080

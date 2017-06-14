@@ -1,0 +1,21 @@
+version: "3.1"
+services:
+  traefik:
+    image: traefik
+    deploy:
+      replicas: 1
+      mode: replicated
+      placement:
+        constraints:
+          - 'node.role == manager'
+    ports:
+      - 80:80
+      - 8080:8080
+    networks:
+      traefik-net:
+    command: --docker --docker.swarmmode --docker.domain=app.dockr.life --docker.watch --web --accesslogsfile=/dev/stdout
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  traefik-net:

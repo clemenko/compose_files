@@ -1,0 +1,52 @@
+version: "3.1"
+services:
+  flask:
+    image: clemenko/akamai_demo
+    deploy:
+      replicas: 5
+      mode: replicated
+      labels:
+        - 'traefik.port=5000'
+        - 'traefik.frontend.rule=Host:flask.dockr.life'
+        - 'traefik.docker.network=traefik_traefik-net'
+        - 'traefik.backend.loadbalancer.sticky=true'
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      db:
+      kv:
+      traefik_traefik-net:
+    depends_on:
+      - mongo
+      - redis
+
+  whoami:
+    image: emilevauge/whoami
+    deploy:
+      replicas: 5
+      mode: replicated
+      labels:
+        - 'traefik.port=80'
+        - 'traefik.frontend.rule=Host:whoami.dockr.life; PathPrefixStrip: /whoami/'
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      traefik_traefik-net:
+
+  mongo:
+    image: mongo
+    networks:
+      db:
+
+  redis:
+    image: redis
+    networks:
+      kv:
+
+networks:
+  kv:
+  db:
+  traefik_traefik-net:
+    external: true

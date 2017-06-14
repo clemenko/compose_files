@@ -1,0 +1,21 @@
+version: "3.1"
+services:
+  visualizer:
+    image: manomarks/visualizer
+    ports:
+      - 8080:8080
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == manager'
+      labels:
+        com.docker.ucp.access.label: "prod"
+        com.docker.ucp.mesh.http.5000: "external_route=http://viz.shirtmullet.com,internal_port=8080"
+    networks:
+      ucp-hrm:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  ucp-hrm:
+    external: true

@@ -6,13 +6,19 @@ services:
       replicas: 4
       update_config:
         parallelism: 2
+        #failure_action: rollback
       mode: replicated
       placement:
         constraints:
-          - node.role == worker
+          - 'node.role == worker'
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
       labels:
           com.docker.ucp.access.label: "prod"
-          com.docker.ucp.mesh.http.5000: "external_route=http://flask.shirtmullet.com,internal_port=5000"
+          com.docker.ucp.mesh.http.5000: "external_route=http://flask.dockr.life,internal_port=5000"
     networks:
       db:
       kv:
@@ -29,12 +35,41 @@ services:
         gid: "0"
         mode: 0400
 
+  suntrust:
+    image: clemenko/suntrust_demo
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+      mode: replicated
+      placement:
+        constraints:
+          - 'node.role == worker'
+      labels:
+          com.docker.ucp.access.label: "prod"
+          com.docker.ucp.mesh.http.5000: "external_route=http://suntrust.dockr.life,internal_port=5000"
+    networks:
+      db:
+      kv:
+      ucp-hrm:
+    ports:
+      - 5001:5000
+    depends_on:
+      - mongo
+      - redis
+    secrets:
+      - source: demo_title_v1
+        target: demo_title
+        uid: "0"
+        gid: "0"
+        mode: 0400
+
   mongo:
     image: mongo
     deploy:
       placement:
         constraints:
-          - node.role == worker
+          - 'node.role == worker'
     networks:
       db:
 
@@ -43,19 +78,31 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == worker
+          - 'node.role == worker'
     networks:
       kv:
 
-  cockroach:
+  cockroach_master:
     image: cockroachdb/cockroach
     deploy:
       placement:
         constraints:
-          - node.role == worker
+          - 'node.role == worker'
     ports:
       - 8090:8080
     command: start --insecure
+    networks:
+      db:
+
+
+  cockroach_slave:
+    image: cockroachdb/cockroach
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - 'node.role == worker'
+    command: start --insecure --join=cockroach_master
     networks:
       db:
 
@@ -66,13 +113,20 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == manager
+          - 'node.role == manager'
+      labels:
+        com.docker.ucp.access.label: "prod"
+    networks:
+      ucp-hrm:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   kv:
   db:
+#    driver: overlay
+#    driver_opts:
+#    encrypted: 'yes'
   ucp-hrm:
     external: true
 

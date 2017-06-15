@@ -28,12 +28,12 @@ services:
       mode: replicated
       labels:
         - 'traefik.port=80'
-        - 'traefik.frontend.rule=Host:whoami.dockr.life; PathPrefixStrip: /whoami/'
+        - 'traefik.frontend.rule=Host:app.dockr.life; PathPrefixStrip: /whoami/'
       placement:
         constraints:
           - 'node.role == worker'
     networks:
-      traefik_traefik-net:
+      traefik_inbound:
 
   mongo:
     image: mongo

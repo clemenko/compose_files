@@ -1,7 +1,7 @@
 version: "3.1"
 services:
   visualizer:
-    image: manomarks/visualizer
+    image: dockersamples/visualizer
     ports:
       - 8080:8080
     deploy:

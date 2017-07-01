@@ -9,6 +9,7 @@ services:
       - /root/jenkins/certs/:/certs/
     ports:
       - 443:443
+      - 80:80
 
   jenkins:
     image: superjenkins

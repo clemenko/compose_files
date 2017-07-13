@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.2"
 services:
   traefik:
     image: traefik
@@ -13,9 +13,10 @@ services:
       - 8080:8080
     networks:
       inbound:
-    command: --docker --docker.swarmmode --docker.domain=app.dockr.life --docker.watch --web --accesslogsfile=/dev/stdout     --docker.tls --docker.tls.ca=/ssl/ca.pem --docker.tls.cert=/ssl/server.pem --docker.tls.key=/ssl/server-key.pem --docker.tls.insecureSkipVerify --entryPoints='Name:https Address::443 TLS' --defaultEntryPoints=https
+    command: --docker --docker.swarmmode --docker.domain=app.dockr.life --docker.watch --web --accesslogsfile=/dev/stdout --entryPoints="Name:https Address::443 TLS:/ssl/cert.pem,/ssl/key.pem" --defaultentrypoints="https" --debug
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root/ssl/:/ssl/
+      - /root/certs/:/ssl/
 networks:
   inbound:

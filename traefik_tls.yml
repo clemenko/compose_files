@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  traefik:
+    image: traefik
+    deploy:
+      replicas: 1
+      mode: replicated
+      placement:
+        constraints:
+          - 'node.role == manager'
+    ports:
+      - 80:80
+      - 8080:8080
+    networks:
+      inbound:
+    command: --docker --docker.swarmmode --docker.domain=app.dockr.life --docker.watch --web --accesslogsfile=/dev/stdout     --docker.tls --docker.tls.ca=/ssl/ca.pem --docker.tls.cert=/ssl/server.pem --docker.tls.key=/ssl/server-key.pem --docker.tls.insecureSkipVerify --entryPoints='Name:https Address::443 TLS' --defaultEntryPoints=https
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/ssl/:/ssl/
+networks:
+  inbound:

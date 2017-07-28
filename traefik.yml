@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.2"
 services:
   traefik:
     image: traefik
@@ -19,5 +19,6 @@ services:
 
 networks:
   inbound:
-  driver_opts:
-    encrypted: true
+#    external: true
+#  driver_opts:
+#    encrypted: true

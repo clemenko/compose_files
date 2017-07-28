@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.2"
 services:
   app:
     image: clemenko/flask_demo
@@ -18,42 +18,11 @@ services:
 #        window: 120s
       labels:
           com.docker.ucp.access.label: "prod"
-          com.docker.ucp.mesh.http.5000: "external_route=http://flask.dockr.life,internal_port=5000"
+          com.docker.ucp.mesh.http.5000: "external_route=http://money.mlp.com,internal_port=5000"
     networks:
       db:
       kv:
       ucp-hrm:
-    ports:
-      - 5000:5000
-    depends_on:
-      - mongo
-      - redis
-    secrets:
-      - source: demo_title_v1
-        target: demo_title
-        uid: "0"
-        gid: "0"
-        mode: 0400
-
-  suntrust:
-    image: clemenko/suntrust_demo
-    deploy:
-      replicas: 4
-      update_config:
-        parallelism: 2
-      mode: replicated
-      placement:
-        constraints:
-          - 'node.role == worker'
-      labels:
-          com.docker.ucp.access.label: "prod"
-          com.docker.ucp.mesh.http.5000: "external_route=http://suntrust.dockr.life,internal_port=5000"
-    networks:
-      db:
-      kv:
-      ucp-hrm:
-    ports:
-      - 5001:5000
     depends_on:
       - mongo
       - redis
@@ -83,7 +52,7 @@ services:
       kv:
 
   cockroach_master:
-    image: cockroachdb/cockroach:v1.0.3
+    image: cockroachdb/cockroach:v1.0.4
     deploy:
       placement:
         constraints:
@@ -96,7 +65,7 @@ services:
 
 
   cockroach_slave:
-    image: cockroachdb/cockroach:v1.0.3
+    image: cockroachdb/cockroach:v1.0.4
     deploy:
       replicas: 2
       placement:
@@ -127,6 +96,7 @@ networks:
 #    driver: overlay
 #    driver_opts:
 #    encrypted: 'yes'
+#     mtu: 1430
   ucp-hrm:
     external: true
 

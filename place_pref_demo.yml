@@ -1,0 +1,44 @@
+version: "3.2"
+services:
+  kafka:
+    image: clemenko/flask_demo
+    deploy:
+      replicas: 3
+      mode: replicated
+      placement:
+        preference: 'spread=node.labels.kafka'
+        constraints:
+          - 'node.role == worker'
+    networks:
+      db:
+      kv:
+    ports:
+      - 5000:5000
+
+  mongo:
+    image: mongo
+    deploy:
+      replicas: 4
+      mode: replicated
+      placement:
+        preference: 'spread=node.labels.mongo'
+        constraints:
+          - 'node.role == worker'
+    networks:
+      db:
+
+  zookeeper:
+    image: redis
+    deploy:
+      replicas: 3
+      mode: replicated
+      placement:
+        preference: 'spread=node.labels.zookeeper'
+        constraints:
+          - 'node.role == worker'
+    networks:
+      kv:
+
+networks:
+  kv:
+  db:

@@ -1,9 +1,9 @@
-version: "3.1"
+version: "3.2"
 services:
   flask:
     image: clemenko/akamai_demo
     deploy:
-      replicas: 5
+      replicas: 10
       mode: replicated
       labels:
         - 'traefik.port=5000'
@@ -17,6 +17,8 @@ services:
       db:
       kv:
       traefik_inbound:
+    ports:
+      - 5000:5000
     depends_on:
       - mongo
       - redis

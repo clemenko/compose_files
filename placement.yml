@@ -1,0 +1,205 @@
+version: '3.0'
+services:
+  BestExMongo1:
+    image: mongo
+    labels:
+      com.docker.ucp.access.label: BestExAdmins
+    hostname: BestExMongo1
+    ports:
+      - "34441:27017"
+    networks:
+      - mongo
+    deploy:
+      labels:
+        com.docker.ucp.access.label: BestExAdmins
+      placement:
+        constraints:
+          - node.labels.mongo_1 == true
+
+  BestExMongo2:
+    image: mongo
+    labels:
+      com.docker.ucp.access.label: BestExAdmins
+    hostname: BestExMongo2
+    ports:
+      - "34442:27017"
+    networks:
+      - mongo
+    deploy:
+      labels:
+        com.docker.ucp.access.label: BestExAdmins
+      placement:
+        constraints:
+          - node.labels.mongo_2 == true
+
+  BestExMongo3:
+    image: mongo
+    labels:
+      com.docker.ucp.access.label: BestExAdmins
+    hostname: BestExMongo3
+    ports:
+      - "34443:27017"
+    networks:
+      - mongo
+    deploy:
+      labels:
+        com.docker.ucp.access.label: BestExAdmins
+      placement:
+        constraints:
+          - node.labels.mongo_3 == true
+
+  zookeeper_1:
+    image: confluentinc/cp-zookeeper
+    hostname: zookeeper_1
+    networks:
+      - kafka_zookeeper
+    ports:
+       - "33601:12181"
+       - "33611:33611"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=12181
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "com.docker.ucp.access.label=BestExAdmins"
+      placement:
+        constraints:
+          - node.labels.zookeeper_1 == true
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+  zookeeper_2:
+    image: confluentinc/cp-zookeeper
+    hostname: zookeeper_2
+    networks:
+      - kafka_zookeeper
+    ports:
+       - "33602:22181"
+       - "33612:33612"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=22181
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "com.docker.ucp.access.label=BestExAdmins"
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.zookeeper_2 == true
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+  zookeeper_3:
+    image: confluentinc/cp-zookeeper
+    hostname: zookeeper_3
+    networks:
+      - kafka_zookeeper
+    ports:
+       - "33603:32181"
+       - "33613:33613"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=32181
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "com.docker.ucp.access.label=BestExAdmins"
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.zookeeper_3 == true
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+  kafka_broker_1:
+    image: confluentinc/cp-kafka
+    networks:
+      - kafka_zookeeper
+    ports:
+       - "34201:34201"
+       - "34211:34211"
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper_1:12181,zookeeper_2:22181,zookeeper_3:32181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://ql1dockerdcpoc1.mi.corp.rockfin.com:34201
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "com.docker.ucp.access.label=BestExAdmins"
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.kafka_broker_1 == true
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+  kafka_broker_2:
+    image: confluentinc/cp-kafka
+    networks:
+      - kafka_zookeeper
+    ports:
+       - "34202:34202"
+       - "34212:34212"
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper_1:12181,zookeeper_2:22181,zookeeper_3:32181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://ql1dockerdcpoc1.mi.corp.rockfin.com:34202
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "com.docker.ucp.access.label=BestExAdmins"
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.kafka_broker_2 == true
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+  kafka_broker_3:
+    image: confluentinc/cp-kafka
+    networks:
+      - kafka_zookeeper
+    ports:
+       - "34203:34203"
+       - "34213:34213"
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper_1:12181,zookeeper_2:22181,zookeeper_3:32181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://ql1dockerdcpoc1.mi.corp.rockfin.com:34203
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "com.docker.ucp.access.label=BestExAdmins"
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.kafka_broker_3 == true
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+volumes:
+  data_mongo:
+      labels:
+        com.docker.ucp.access.label: BestExAdmins
+  data_kafka:
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+  data_zookeeper:
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"
+
+networks:
+  mongo:
+    labels:
+      - "com.docker.ucp.access.label: BestExAdmins"
+  kafka_zookeeper:
+    labels:
+      - "com.docker.ucp.access.label=BestExAdmins"

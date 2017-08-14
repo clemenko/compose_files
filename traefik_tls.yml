@@ -14,9 +14,10 @@ services:
     networks:
       inbound:
     command: --docker --docker.swarmmode --docker.domain=app.dockr.life --docker.watch --web --accesslogsfile=/dev/stdout --entryPoints="Name:https Address::443 TLS:/ssl/cert.pem,/ssl/key.pem" --defaultentrypoints="https" --debug
-
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /root/certs/:/ssl/
 networks:
   inbound:
+    labels:
+      com.docker.ucp.access.label: "prod"

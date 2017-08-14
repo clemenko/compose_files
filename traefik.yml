@@ -19,6 +19,8 @@ services:
 
 networks:
   inbound:
+    labels:
+      com.docker.ucp.access.label: "prod"
 #    external: true
 #  driver_opts:
 #    encrypted: true

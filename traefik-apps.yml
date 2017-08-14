@@ -6,6 +6,7 @@ services:
       replicas: 10
       mode: replicated
       labels:
+        com.docker.ucp.access.label: "prod"
         - 'traefik.port=5000'
         - 'traefik.frontend.rule=Host:flask.dockr.life'
         - 'traefik.docker.network=traefik_inbound'
@@ -29,6 +30,7 @@ services:
       replicas: 5
       mode: replicated
       labels:
+        com.docker.ucp.access.label: "prod"
         - 'traefik.port=80'
         - 'traefik.frontend.rule=Host:app.dockr.life; PathPrefixStrip: /whoami/'
       placement:
@@ -39,16 +41,26 @@ services:
 
   mongo:
     image: mongo
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "prod"
     networks:
       db:
 
   redis:
     image: redis
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "prod"
     networks:
       kv:
 
 networks:
   kv:
+    labels:
+      com.docker.ucp.access.label: "prod"
   db:
+    labels:
+      com.docker.ucp.access.label: "prod"
   traefik_inbound:
     external: true

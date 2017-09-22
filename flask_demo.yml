@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.3"
 services:
   app:
     image: clemenko/flask_demo
@@ -11,14 +11,15 @@ services:
       placement:
         constraints:
           - 'node.role == worker'
-#      restart_policy:
-#        condition: on-failure
-#        delay: 5s
-#        max_attempts: 3
-#        window: 120s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
       labels:
-          com.docker.ucp.access.label: "prod"
-          com.docker.ucp.mesh.http.5000: "external_route=http://money.mlp.com,internal_port=5000"
+          #com.docker.ucp.collection: "/prod"
+          com.docker.ucp.access.label: "/prod"
+          com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"
     networks:
       db:
       kv:
@@ -36,6 +37,8 @@ services:
   mongo:
     image: mongo
     deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
       placement:
         constraints:
           - 'node.role == worker'
@@ -45,6 +48,8 @@ services:
   redis:
     image: redis
     deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
       placement:
         constraints:
           - 'node.role == worker'
@@ -52,8 +57,10 @@ services:
       kv:
 
   cockroach_master:
-    image: cockroachdb/cockroach:v1.0.4
+    image: cockroachdb/cockroach
     deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
       placement:
         constraints:
           - 'node.role == worker'
@@ -63,10 +70,11 @@ services:
     networks:
       db:
 
-
   cockroach_slave:
-    image: cockroachdb/cockroach:v1.0.4
+    image: cockroachdb/cockroach
     deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
       replicas: 2
       placement:
         constraints:
@@ -75,28 +83,17 @@ services:
     networks:
       db:
 
-  visualizer:
-    image: dockersamples/visualizer
-    ports:
-      - 8080:8080
-    deploy:
-      placement:
-        constraints:
-          - 'node.role == manager'
-      labels:
-        com.docker.ucp.access.label: "prod"
-    networks:
-      ucp-hrm:
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
 networks:
   kv:
+    labels:
+      com.docker.ucp.access.label: "/prod"
   db:
-#    driver: overlay
-#    driver_opts:
-#    encrypted: 'yes'
-#     mtu: 1430
+    labels:
+      com.docker.ucp.access.label: "/prod"
+    driver: overlay
+    driver_opts:
+      encrypted: ""
+
   ucp-hrm:
     external: true
 

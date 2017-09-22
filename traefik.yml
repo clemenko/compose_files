@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   traefik:
-    image: traefik
+    image: traefik:1.4
     deploy:
       replicas: 1
       mode: replicated
@@ -19,8 +19,8 @@ services:
 
 networks:
   inbound:
-    labels:
-      com.docker.ucp.access.label: "prod"
+#    labels:
+#      com.docker.ucp.access.label: "prod"
 #    external: true
 #  driver_opts:
 #    encrypted: true

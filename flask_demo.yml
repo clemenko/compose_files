@@ -6,7 +6,6 @@ services:
       replicas: 4
       update_config:
         parallelism: 2
-        #failure_action: rollback
       mode: replicated
       placement:
         constraints:
@@ -17,9 +16,10 @@ services:
         max_attempts: 3
         window: 120s
       labels:
-          #com.docker.ucp.collection: "/prod"
           com.docker.ucp.access.label: "/prod"
           com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"
+    ports:
+      - 5000:5000
     networks:
       db:
       kv:
@@ -30,9 +30,6 @@ services:
     secrets:
       - source: demo_title_v1
         target: demo_title
-        uid: "0"
-        gid: "0"
-        mode: 0400
 
   mongo:
     image: mongo
@@ -46,7 +43,7 @@ services:
       db:
 
   redis:
-    image: redis
+    image: redis:alpine
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"

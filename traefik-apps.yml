@@ -48,7 +48,7 @@ services:
       db:
 
   redis:
-    image: redis
+    image: redis:alpine
     deploy:
       labels:
         com.docker.ucp.access.label: "prod"

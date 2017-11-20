@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.4"
 services:
   app:
     image: clemenko/flask_demo
@@ -6,6 +6,9 @@ services:
       replicas: 4
       update_config:
         parallelism: 2
+        delay: 10s
+        #order: start-first
+        failure_action: rollback
       mode: replicated
       placement:
         constraints:
@@ -24,11 +27,8 @@ services:
       db:
       kv:
       ucp-hrm:
-    depends_on:
-      - mongo
-      - redis
     secrets:
-      - source: demo_title_v1
+      - source: demo_title_v2
         target: demo_title
 
   mongo:
@@ -95,5 +95,5 @@ networks:
     external: true
 
 secrets:
-  demo_title_v1:
+  demo_title_v2:
     external: true

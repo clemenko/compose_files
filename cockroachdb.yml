@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+  cockroach_master:
+    image: cockroachdb/cockroach
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    ports:
+      - 8090:8080
+    command: start --insecure
+    networks:
+      db:
+
+  cockroach_slave:
+    image: cockroachdb/cockroach
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      replicas: 2
+      placement:
+        constraints:
+          - 'node.role == worker'
+    command: start --insecure --join=cockroach_master
+    networks:
+      db:
+
+networks:
+  db:
+    labels:
+      com.docker.ucp.access.label: "/prod"
+    driver: overlay
+    driver_opts:
+      encrypted: ""

@@ -1,0 +1,92 @@
+version: "3.4"
+services:
+  app:
+    image: clemenko/flask_demo
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+        delay: 10s
+        #order: start-first
+        failure_action: rollback
+      mode: replicated
+      placement:
+        constraints:
+          - 'node.role == worker'
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      labels:
+          com.docker.ucp.access.label: "/prod"
+    ports:
+      - 5000:5000
+    networks:
+      db:
+      kv:
+
+
+  mongo:
+    image: mongo
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      db:
+
+  redis:
+    image: redis:alpine
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      kv:
+
+  cockroach_master:
+    image: cockroachdb/cockroach
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    ports:
+      - 8090:8080
+    command: start --insecure
+    networks:
+      db:
+
+  cockroach_slave:
+    image: cockroachdb/cockroach
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      replicas: 2
+      placement:
+        constraints:
+          - 'node.role == worker'
+    command: start --insecure --join=cockroach_master
+    networks:
+      db:
+
+networks:
+  kv:
+    labels:
+      com.docker.ucp.access.label: "/prod"
+  db:
+    labels:
+      com.docker.ucp.access.label: "/prod"
+    driver: overlay
+    driver_opts:
+      encrypted: ""
+
+secrets:
+  demo_title_v2:
+    external: true

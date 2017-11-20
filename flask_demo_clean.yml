@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+  app:
+    image: clemenko/flask_demo
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+      mode: replicated
+      placement:
+        constraints:
+          - 'node.role == worker'
+    ports:
+      - 5000:5000
+    networks:
+      db:
+      kv:
+    depends_on:
+      - mongo
+      - redis
+
+  mongo:
+    image: mongo
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      db:
+
+  redis:
+    image: redis:alpine
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      kv:
+
+networks:
+  kv:
+  db:

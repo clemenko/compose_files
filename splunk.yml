@@ -23,7 +23,6 @@ services:
           - 'node.role == manager'
     environment:
       SPLUNK_START_ARGS: '--accept-license'
-      SPLUNK_USER: 'root'
       SPLUNK_ENABLE_LISTEN: '9997'
     volumes:
       - /opt/splunk/etc/:/opt/splunk/etc/

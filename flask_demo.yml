@@ -13,11 +13,6 @@ services:
       placement:
         constraints:
           - 'node.role == worker'
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
       labels:
           com.docker.ucp.access.label: "/prod"
           com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"
@@ -28,7 +23,7 @@ services:
       kv:
       ucp-hrm:
     secrets:
-      - source: demo_title_v2
+      - source: demo_title_v1
         target: demo_title
 
   mongo:
@@ -95,5 +90,5 @@ networks:
     external: true
 
 secrets:
-  demo_title_v2:
+  demo_title_v1:
     external: true

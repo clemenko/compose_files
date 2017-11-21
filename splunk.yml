@@ -1,0 +1,38 @@
+version: "3.3"
+services:
+  monitor:
+    image: splunk/universalforwarder:7.0.0-monitor
+    deploy:
+      mode: global
+    environment:
+      SPLUNK_START_ARGS: '--accept-license'
+      SPLUNK_USER: 'root'
+      SPLUNK_FORWARD_SERVER: 'server:9997'
+    volumes:
+      - /var/lib/docker/containers:/host/containers:ro
+      - /var/log:/docker/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      splunk:
+
+  server:
+    image: splunk/splunk
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == manager'
+    environment:
+      SPLUNK_START_ARGS: '--accept-license'
+      SPLUNK_USER: 'root'
+      SPLUNK_ENABLE_LISTEN: '9997'
+    volumes:
+      - /opt/splunk/etc/:/opt/splunk/etc/
+      - /opt/splunk/var/:/opt/splunk/var/
+    ports:
+      - 9997:9997
+      - 8000:8000
+    networks:
+      splunk:
+
+networks:
+   splunk:

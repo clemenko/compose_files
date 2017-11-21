@@ -7,7 +7,7 @@ services:
     environment:
       SPLUNK_START_ARGS: '--accept-license'
       SPLUNK_USER: 'root'
-      SPLUNK_FORWARD_SERVER: 'server:9997'
+      SPLUNK_FORWARD_SERVER: 'ucp.dockr.life:9997'
     volumes:
       - /var/lib/docker/containers:/host/containers:ro
       - /var/log:/docker/log:ro

@@ -1,0 +1,19 @@
+version: "3.4"
+services:
+  logdna:
+#    image: gliderlabs/logspout
+    image: logdna/logdna-agent:latest
+    deploy:
+      mode: global
+      restart_policy:
+        condition: any
+        delay: 10s
+        window: 30s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/hostname:/etc/logdna-hostname:ro
+      - /etc/os-release:/etc/os-release:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    environment:
+        - LOGDNA_AGENT_KEY=1b5c0a9fa8294067aba0681c37ca0df9

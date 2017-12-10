@@ -13,6 +13,8 @@ services:
       placement:
         constraints:
           - 'node.role == worker'
+      #  preferences:
+      #    - spread: node.labels.availabilityZone
       labels:
           com.docker.ucp.access.label: "/prod"
           com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"

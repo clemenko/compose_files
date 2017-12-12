@@ -16,4 +16,8 @@ services:
       - /var/log:/var/log:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
     environment:
-        - LOGDNA_AGENT_KEY=1b5c0a9fa8294067aba0681c37ca0df9
+      - LOGDNA_AGENT_KEY=1b5c0a9fa8294067aba0681c37ca0df9
+      - SYSLOG_STRUCTURED_DATA='logdna@48950 key="1b5c0a9fa8294067aba0681c37ca0df9" tag="docker"'
+      - DEBUG=true
+#    command:
+#      - syslog+tls://syslog-a.logdna.com:6514

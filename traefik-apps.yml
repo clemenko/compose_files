@@ -1,12 +1,11 @@
 version: "3.2"
 services:
   flask:
-    image: clemenko/akamai_demo
+    image: clemenko/flask_demo
     deploy:
-      replicas: 10
+      replicas: 3
       mode: replicated
       labels:
-        com.docker.ucp.access.label: "prod"
         - 'traefik.port=5000'
         - 'traefik.frontend.rule=Host:flask.dockr.life'
         - 'traefik.docker.network=traefik_inbound'
@@ -18,8 +17,6 @@ services:
       db:
       kv:
       traefik_inbound:
-    ports:
-      - 5000:5000
     depends_on:
       - mongo
       - redis
@@ -27,10 +24,9 @@ services:
   whoami:
     image: emilevauge/whoami
     deploy:
-      replicas: 5
+      replicas: 3
       mode: replicated
       labels:
-        com.docker.ucp.access.label: "prod"
         - 'traefik.port=80'
         - 'traefik.frontend.rule=Host:app.dockr.life; PathPrefixStrip: /whoami/'
       placement:
@@ -39,28 +35,32 @@ services:
     networks:
       traefik_inbound:
 
+  visualizer:
+    image: dockersamples/visualizer
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == manager'
+      labels:
+        - 'traefik.port=8080'
+        - 'traefik.frontend.rule=Host:app.dockr.life; PathPrefixStrip: /viz/'
+    networks:
+      traefik_inbound:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   mongo:
     image: mongo
-    deploy:
-      labels:
-        com.docker.ucp.access.label: "prod"
     networks:
       db:
 
   redis:
     image: redis:alpine
-    deploy:
-      labels:
-        com.docker.ucp.access.label: "prod"
     networks:
       kv:
 
 networks:
   kv:
-    labels:
-      com.docker.ucp.access.label: "prod"
   db:
-    labels:
-      com.docker.ucp.access.label: "prod"
   traefik_inbound:
     external: true

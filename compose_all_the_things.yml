@@ -25,7 +25,6 @@ services:
     networks:
       db:
       kv:
-      ucp-hrm:
     secrets:
       - source: demo_title_v1
         target: demo_title

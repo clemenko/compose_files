@@ -1,9 +1,9 @@
 version: "3.3"
 services:
   app:
-    image: clemenko/flask_demo
+    image: clemenko/flask_demo:test
     deploy:
-      replicas: 4
+      replicas: 1
       update_config:
         parallelism: 2
         delay: 10s
@@ -16,16 +16,14 @@ services:
       #  preferences:
       #    - spread: node.labels.availabilityZone
       labels:
-          com.docker.ucp.access.label: "/prod"
-          com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"
-          #com.docker.lb.hosts: app.dockr.life
-          #com.docker.lb.port: 5000
+          com.docker.lb.hosts: app.dockr.life
+          com.docker.lb.context_root: /
+          com.docker.lb.port: 5000
     ports:
       - 5000:5000
     networks:
       db:
       kv:
-      ucp-hrm:
     secrets:
       - source: demo_title_v1
         target: demo_title
@@ -52,33 +50,6 @@ services:
     networks:
       kv:
 
-  cockroach_master:
-    image: cockroachdb/cockroach
-    deploy:
-      labels:
-        com.docker.ucp.access.label: "/prod"
-      placement:
-        constraints:
-          - 'node.role == worker'
-    ports:
-      - 8090:8080
-    command: start --insecure
-    networks:
-      db:
-
-  cockroach_slave:
-    image: cockroachdb/cockroach
-    deploy:
-      labels:
-        com.docker.ucp.access.label: "/prod"
-      replicas: 2
-      placement:
-        constraints:
-          - 'node.role == worker'
-    command: start --insecure --join=cockroach_master
-    networks:
-      db:
-
 networks:
   kv:
     labels:
@@ -89,9 +60,6 @@ networks:
     driver: overlay
     driver_opts:
       encrypted: ""
-
-  ucp-hrm:
-    external: true
 
 secrets:
   demo_title_v1:

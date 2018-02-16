@@ -25,7 +25,7 @@ kind: Deployment
 metadata:
   name: wordpress-deployment
 spec:
-  replicas: 1
+  replicas: 10
   template:
     metadata:
       labels:

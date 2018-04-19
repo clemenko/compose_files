@@ -24,7 +24,7 @@ services:
       #    - spread: node.labels.availabilityZone
       labels:
           com.docker.ucp.access.label: "/prod"
-#          com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"
+          com.docker.ucp.mesh.http.5000: "external_route=http://app.dockr.life,internal_port=5000"
           com.docker.lb.hosts: app.dockr.life
           com.docker.lb.port: 5000
     ports:
@@ -32,6 +32,7 @@ services:
     networks:
       db:
       kv:
+      ucp-hrm:
     secrets:
       - source: demo_title_v1
         target: demo_title
@@ -114,6 +115,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
+  ucp-hrm:
+    external: true
   kv:
     labels:
       com.docker.ucp.access.label: "/prod"

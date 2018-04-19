@@ -1,0 +1,35 @@
+version: "3.2"
+
+services:
+
+  database:
+    image: sixeyed/atsea-db:mssql
+    ports:
+      - mode: host
+        target: 1433
+        published: 1433
+    networks:
+     - atsea
+    deploy:
+      endpoint_mode: dnsrr
+      placement:
+        constraints:
+          - 'node.platform.os == windows'
+          - 'node.role == worker'
+
+  appserver:
+    image: sixeyed/atsea-app:mssql
+    ports:
+      - mode: host
+        target: 8080
+        published: 80
+    networks:
+      - atsea
+    deploy:
+      endpoint_mode: dnsrr
+      placement:
+        constraints:
+          - 'node.platform.os == linux'
+          - 'node.role == worker'
+networks:
+  atsea:

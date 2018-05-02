@@ -1,9 +1,9 @@
-version: "3.3"
+version: "3.4"
 services:
   app:
-    image: clemenko/flask_demo:test
+    image: clemenko/flask_demo
     deploy:
-      replicas: 1
+      replicas: 4
       update_config:
         parallelism: 2
         delay: 10s

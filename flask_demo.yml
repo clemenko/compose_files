@@ -7,7 +7,7 @@ services:
       update_config:
         parallelism: 2
         delay: 10s
-        #order: start-first
+        order: start-first
         failure_action: rollback
       mode: replicated
       placement:
@@ -17,7 +17,7 @@ services:
       #    - spread: node.labels.availabilityZone
       labels:
           com.docker.lb.network: flask_kv
-          com.docker.lb.hosts: app.dockr.life
+          com.docker.lb.hosts: a.n.com
           com.docker.lb.port: 5000
     ports:
       - 5000:5000

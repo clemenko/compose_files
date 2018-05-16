@@ -6,15 +6,11 @@ services:
       replicas: 4
       update_config:
         parallelism: 2
-      mode: replicated
     ports:
       - 5000:5000
     networks:
       db:
       kv:
-    depends_on:
-      - mongo
-      - redis
 
   mongo:
     image: mongo

@@ -23,6 +23,7 @@ services:
       #  preferences:
       #    - spread: node.labels.availabilityZone
       labels:
+          com.docker.ucp.access.label: "/prod"
           com.docker.lb.network: flask_kv
           com.docker.lb.hosts: app.dockr.life
           com.docker.lb.port: 5000
@@ -47,7 +48,7 @@ services:
       db:
 
   redis:
-    image: redis:alpine
+    image: redis
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
@@ -104,10 +105,10 @@ services:
         constraints:
           - 'node.role == manager'
       labels:
-          com.docker.lb.hosts: viz.dockr.life
+          com.docker.lb.hosts: viz.dockr.life/wells_viz/
           com.docker.lb.port: 8080
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 networks:
   kv:
@@ -123,3 +124,5 @@ networks:
 secrets:
   demo_title_v1:
     external: true
+
+configs:

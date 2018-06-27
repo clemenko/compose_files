@@ -1,0 +1,124 @@
+version: '3.3'
+
+networks:
+
+  elk-backend:
+    driver: overlay
+    attachable: true
+
+volumes:
+
+  elasticdata1:
+  elasticdata2:
+  logstashpipeline:
+
+configs:
+  logstash.conf:
+    file: ./logstash.conf
+
+services:
+
+  ########################################################################################################################
+  # Elasticsearch -  open-source, broadly-distributable, readily-scalable, enterprise-grade search engine.
+  # https://www.docker.elastic.co/#
+  # https://github.com/elastic/elasticsearch
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  ########################################################################################################################
+  elastic-search:
+    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.2
+    hostname: elastic-search
+    volumes:
+      - elasticdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - ELASTIC_PASSWORD=Passw0rd#
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 65536
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+        reservations:
+          memory: 6g
+    networks:
+      - elk-backend
+
+  elastic-search2:
+    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.2
+    hostname: elastic-search2
+    volumes:
+      - elasticdata2:/usr/share/elasticsearch/data
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - "discovery.zen.ping.unicast.hosts=elastic-search"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 65536
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+        reservations:
+          memory: 6g
+    networks:
+      - elk-backend
+
+  ########################################################################################################################
+  # Logstash - light-weight, open-source, server-side data processing pipeline that allows you to collect data from a
+  #            wide variety of sources, transform it on the fly, and send it to your desired destination.
+  # https://www.docker.elastic.co/#
+  # https://github.com/elastic/logstash-docker
+  # https://www.elastic.co/guide/en/logstash/master/docker.html
+  ########################################################################################################################
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.2.2
+    hostname: logstash
+    ports:
+      - "5000:5000"    # Logstash will listen on port 5000 for log data from the Docker Syslog logging driver
+    volumes:
+      - logstashpipeline:/usr/share/logstash/pipeline/
+    configs:
+      - source: logstash.conf
+        target: /usr/share/logstash/logstash.conf
+    environment:
+      - 'path.config=/usr/share/logstash/logstash.conf'
+      - 'xpack.monitoring.elasticsearch.url=elastic-search:9200'
+      - 'xpack.monitoring.elasticsearch.username=elastic'
+      - 'xpack.monitoring.elasticsearch.password=Passw0rd#'
+    networks:
+      - elk-backend
+
+  ########################################################################################################################
+  # Kibana - open-source data visualization and exploration tool used for log and time series analytics,
+  #          application monitoring, and operational intelligence use cases.
+  # https://www.docker.elastic.co/#
+  # https://github.com/elastic/kibana-docker
+  # https://www.elastic.co/guide/en/kibana/master/docker.html
+  ########################################################################################################################
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.2
+    hostname: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - SERVER_NAME=kibana
+      - ELASTICSEARCH_URL=http://elastic-search:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=Passw0rd#
+      - XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED=true
+    networks:
+      - elk-backend
+    depends_on:
+      - elastic-search
+      - elastic-search2

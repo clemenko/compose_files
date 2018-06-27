@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+  http:
+    image: nginx:latest
+    deploy:
+      replicas: 4
+    ports:
+      - "8080:80"
+    volumes:
+      - type: volume
+        source: nfs
+        target: /usr/share/nginx/html
+        volume:
+          nocopy: true
+volumes:
+  nfs:
+    driver_opts:
+      type: "nfs"
+      o: "addr=<manager1>,nolock,soft,rw"
+      device: ":/nfs"

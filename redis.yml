@@ -1,0 +1,14 @@
+version: 3.4
+services:
+  redis.1:
+    image: redis:alpine
+    deploy:
+      placement:
+        constraints:
+          - 'node.labels.redis_node == 1'
+    networks:
+      redis:
+
+
+networks:
+  redis:

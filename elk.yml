@@ -25,7 +25,7 @@ services:
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
   ########################################################################################################################
   elastic-search:
-    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     hostname: elastic-search
     volumes:
       - elasticdata1:/usr/share/elasticsearch/data
@@ -51,7 +51,7 @@ services:
       - elk-backend
 
   elastic-search2:
-    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     hostname: elastic-search2
     volumes:
       - elasticdata2:/usr/share/elasticsearch/data
@@ -82,7 +82,7 @@ services:
   # https://www.elastic.co/guide/en/logstash/master/docker.html
   ########################################################################################################################
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.2.2
+    image: docker.elastic.co/logstash/logstash:6.3.1 
     hostname: logstash
     ports:
       - "5000:5000"    # Logstash will listen on port 5000 for log data from the Docker Syslog logging driver
@@ -107,7 +107,7 @@ services:
   # https://www.elastic.co/guide/en/kibana/master/docker.html
   ########################################################################################################################
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.2.2
+    image: docker.elastic.co/kibana/kibana:6.3.1
     hostname: kibana
     ports:
       - "5601:5601"

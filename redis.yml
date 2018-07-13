@@ -1,33 +1,36 @@
-version: 3.4
+version: "3.4"
 services:
-  redis.1:
+  redis_1:
     image: redis:alpine
     deploy:
       placement:
         constraints:
           - 'node.labels.redis_node == 1'
+    command: --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     volumes:
       - /opt/data:/data
     networks:
       redis:
 
-  redis.2:
+  redis_2:
     image: redis:alpine
     deploy:
       placement:
         constraints:
           - 'node.labels.redis_node == 2'
+    command: --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     volumes:
       - /opt/data:/data
     networks:
       redis:
 
-  redis.3:
+  redis_3:
     image: redis:alpine
     deploy:
       placement:
         constraints:
           - 'node.labels.redis_node == 3'
+    command: --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     volumes:
       - /opt/data:/data
     networks:

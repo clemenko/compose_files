@@ -6,6 +6,30 @@ services:
       placement:
         constraints:
           - 'node.labels.redis_node == 1'
+    volumes:
+      - /opt/data:/data
+    networks:
+      redis:
+
+  redis.2:
+    image: redis:alpine
+    deploy:
+      placement:
+        constraints:
+          - 'node.labels.redis_node == 2'
+    volumes:
+      - /opt/data:/data
+    networks:
+      redis:
+
+  redis.3:
+    image: redis:alpine
+    deploy:
+      placement:
+        constraints:
+          - 'node.labels.redis_node == 3'
+    volumes:
+      - /opt/data:/data
     networks:
       redis:
 

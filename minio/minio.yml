@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+  minio:
+    image: minio/minio
+    networks:
+      minio:
+    command: "server /opt"
+    environment:
+     MINIO_ACCESS_KEY: 9R08KQXN5FHU9EGRVLXZ
+     MINIO_SECRET_KEY: ZtelagYute6EHPOzTY+gT8gdRDACKtQLnhgjk2iI
+    volumes:
+      - /root/minio/data/:/opt/
+
+  nginx:
+    image: nginx:alpine
+    networks:
+      minio:
+    volumes:
+      - /root/minio/nginx.conf:/etc/nginx/nginx.conf
+      - /root/minio/certs/:/certs/
+    ports:
+      - 443:443
+
+networks:
+  minio:

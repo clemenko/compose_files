@@ -6,8 +6,8 @@ services:
       minio:
     command: "server /opt"
     environment:
-     MINIO_ACCESS_KEY: 9R08KQXN5FHU9EGRVLXZ
-     MINIO_SECRET_KEY: ZtelagYute6EHPOzTY+gT8gdRDACKtQLnhgjk2iI
+     MINIO_ACCESS_KEY: admin
+     MINIO_SECRET_KEY: Pa22word
     volumes:
       - /root/minio/data/:/opt/
 

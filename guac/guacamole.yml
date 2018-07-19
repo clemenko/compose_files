@@ -1,0 +1,26 @@
+version: "3.3"
+services:
+  guacd:
+    image: guacamole/guacd
+    networks:
+      guacd:
+
+  guacamole:
+    image: trueability/guacamole-noauth:0.9.14-git49c11b
+    networks:
+      guacd:
+    volumes:
+      - /root/guac/:/etc/guacamole
+
+  nginx:
+    image: nginx:alpine
+    networks:
+      minio:
+    volumes:
+      - /root/guac/nginx.conf:/etc/nginx/nginx.conf
+      - /root/guac/:/certs/
+    ports:
+      - 443:443
+
+networks:
+  guacd:

@@ -1,0 +1,19 @@
+<configs>
+
+    <!-- test-node ssh connection -->
+    <config name="test-node-ssh" protocol="ssh">
+        <param name="hostname" value="206.189.198.251" />
+        <param name="port" value="22" />
+        <param name="username" value="root" />
+        <param name="password" value="Pa22word" />
+    </config>
+
+    <!-- test-node vnc connection -->
+    <config name="test-node-vnc" protocol="vnc">
+        <param name="hostname" value="test-node" />
+        <param name="port" value="5901" />
+        <param name="username" value="ubuntu" />
+        <param name="password" value="oober-secure-password" />
+    </config>
+
+</configs>

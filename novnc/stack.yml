@@ -1,0 +1,11 @@
+version: '3.1'
+
+services:
+
+  xfce4-novnc:
+    image: yangxuan8282/alpine-xfce4-novnc:amd64
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: bash -c "sudo apk --update add docker && run_novnc"
+    ports:
+      - 80:6080

@@ -1,13 +1,8 @@
-FROM alpine:edge as build
-RUN apk -U add docker
-
-
 FROM alpine:edge
-COPY --from=build /usr/bin/docker /usr/bin/
 COPY config /etc/skel/.config
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing"  >> /etc/apk/repositories \
-  && apk --update --no-cache add xvfb x11vnc@testing xfce4 xfce4-terminal paper-icon-theme arc-theme@testing chromium python bash sudo htop procps curl ca-certificates novnc@testing \
-  && echo "CHROMIUM_FLAGS=\"--no-sandbox --no-first-run --disable-gpu\"" >> /etc/chromium/chromium.conf \
+  && apk -U --no-cache add docker xvfb x11vnc@testing xfce4 xfce4-terminal paper-icon-theme arc-theme@testing chromium python bash sudo htop procps curl ca-certificates novnc@testing \
+  && echo "CHROMIUM_FLAGS=\"--no-first-run --disable-gpu\"" >> /etc/chromium/chromium.conf \
   && addgroup alpine \
   && adduser -G alpine -s /bin/bash -D alpine \
   && echo "alpine:alpine" | /usr/sbin/chpasswd \

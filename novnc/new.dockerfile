@@ -1,7 +1,7 @@
 FROM alpine:edge
 COPY config /etc/skel/.config
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing"  >> /etc/apk/repositories && \
-  apk -U --no-cache add xvfb x11vnc@testing xfce4 xfce4-terminal firefox@testing python bash paper-icon-theme arc-theme@testing sudo curl docker ca-certificates wget && \
+  apk -U --no-cache add xvfb x11vnc@testing xfce4 xfce4-terminal firefox@testing python bash sudo curl docker ca-certificates wget && \
   addgroup alpine && \
   adduser -G alpine -s /bin/bash -D alpine && \
   echo "alpine:alpine" | /usr/sbin/chpasswd && \
@@ -29,7 +29,7 @@ RUN set -xe && \
   wget -qO- https://github.com/novnc/noVNC/archive/v1.0.0.tar.gz | tar xz --strip 1 -C $NOVNC_HOME && \
   wget -qO- https://github.com/novnc/websockify/archive/v0.8.0.tar.gz | tar xzf - --strip 1 -C $NOVNC_HOME/utils/websockify && \
   chmod +x -v $NOVNC_HOME/utils/*.sh && \
-  ln -s $NOVNC_HOME/vnc_auto.html $NOVNC_HOME/index.html
+  ln -s $NOVNC_HOME/vnc_lite.html $NOVNC_HOME/index.html
 
 WORKDIR $HOME
 EXPOSE $VNC_PORT $NOVNC_PORT

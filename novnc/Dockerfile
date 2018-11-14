@@ -1,9 +1,4 @@
-FROM alpine:edge as build
-RUN apk -U add docker
-
-
 FROM alpine:edge
-COPY --from=build /usr/bin/docker /usr/bin/
 COPY config /etc/skel/.config
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing"  >> /etc/apk/repositories \
   && apk --update --no-cache add xvfb x11vnc@testing xfce4 xfce4-terminal paper-icon-theme arc-theme@testing chromium python bash sudo htop procps curl ca-certificates novnc@testing \

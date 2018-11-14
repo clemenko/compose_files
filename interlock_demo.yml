@@ -1,0 +1,21 @@
+version: "3.4"
+
+services:
+  demo:
+    image: ehazlett/docker-demo
+    deploy:
+      replicas: 1
+      labels:
+        com.docker.lb.hosts: test.dockr.life
+        com.docker.lb.network: demo-network
+        com.docker.lb.port: 8080
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+    networks:
+      - demo-network
+
+networks:
+  demo-network:
+    driver: overlay

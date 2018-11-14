@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  redis:
+    image: redis:alpine
+    deploy:
+      replicas: 6
+    command: ["redis-server","--appendonly yes","--cluster-enabled yes","--cluster-node-timeout 60000","--cluster-require-full-coverage no"]
+    networks:
+      redis:
+
+networks:
+  redis:
+    driver: overlay
+    attachable: true
+
+
+#deploy as stack named "redis"
+
+#redis_list=$(for i in $(docker ps |grep redis|awk '{print $1}'); do docker inspect $i |jq -r .[].NetworkSettings.Networks.redis_redis.IPAddress; done | awk '{printf $1":6379 "}'|sed 's/,$//')
+
+
+#docker exec -it $(docker ps |grep redis |tail -1 | awk '{print $1}') sh -c "echo yes | redis-cli --cluster create $redis_list --cluster-replicas 1"

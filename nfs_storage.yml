@@ -9,12 +9,12 @@ services:
       - "8080:80"
     volumes:
       - type: volume
-        source: nfs
+        source: chris
         target: /usr/share/nginx/html
         volume:
           nocopy: true
 volumes:
-  nfs:
+  chris:
     driver_opts:
       type: "nfs"
       o: "addr=<manager1>,nolock,soft,rw"

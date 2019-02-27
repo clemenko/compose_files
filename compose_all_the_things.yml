@@ -20,7 +20,7 @@ services:
       placement:
         constraints:
           - 'node.role == worker'
-          - 'node.platform.os' == 'linux'
+          - 'node.platform.os == linux'
       #  preferences:
       #    - spread: node.labels.availabilityZone
       labels:

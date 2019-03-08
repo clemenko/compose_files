@@ -1,4 +1,12 @@
 version: "3.4"
+
+x-updating:
+  &parallel
+  parallelism: 2
+  delay: 10s
+  order: start-first
+  failure_action: rollback
+
 services:
   app:
     image: clemenko/flask_demo
@@ -11,11 +19,7 @@ services:
         reservations:
           cpus: '0.5'
           memory: 50M
-      update_config:
-        parallelism: 2
-        delay: 10s
-        order: start-first
-        failure_action: rollback
+      update_config: *parallel
       mode: replicated
       placement:
         constraints:

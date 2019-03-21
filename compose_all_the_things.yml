@@ -9,7 +9,7 @@ x-updating:
 
 services:
   app:
-    image: clemenko/flask_demo:v12.33
+    image: clemenko/flask_demo
     deploy:
       replicas: 4
       resources:
@@ -32,7 +32,7 @@ services:
           com.docker.lb.network: flask_kv
           com.docker.lb.hosts: app.dockr.life
           com.docker.lb.sticky_session_cookie: session
-          com.docker.lb.context_root: /app1
+          com.docker.lb.context_root: /
           com.docker.lb.port: 5000
     ports:
       - 5000:5000

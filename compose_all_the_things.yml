@@ -2,7 +2,7 @@ version: "3.4"
 
 x-updating:
   &parallel
-  parallelism: 2
+  parallelism: 1
   delay: 10s
   order: start-first
   failure_action: rollback

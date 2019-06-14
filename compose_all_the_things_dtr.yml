@@ -1,0 +1,135 @@
+version: "3.4"
+
+x-updating:
+  &parallel
+  parallelism: 1
+  delay: 10s
+  order: start-first
+  failure_action: rollback
+
+services:
+  app:
+    image: dtr.dockr.life/admin/flask
+    deploy:
+      replicas: 4
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 50M
+        reservations:
+          cpus: '0.5'
+          memory: 50M
+      update_config: *parallel
+      mode: replicated
+      placement:
+        constraints:
+          - 'node.role == worker'
+          - 'node.platform.os == linux'
+      #  preferences:
+      #    - spread: node.labels.availabilityZone
+      labels:
+          com.docker.ucp.access.label: "/prod"
+          com.docker.lb.network: flask_kv
+          com.docker.lb.hosts: app.dockr.life
+          com.docker.lb.sticky_session_cookie: session
+          com.docker.lb.context_root: /
+          com.docker.lb.port: 5000
+    ports:
+      - 5000:5000
+    networks:
+      db:
+      kv:
+    secrets:
+      - source: demo_title_v1
+        target: demo_title
+
+  mongo:
+    image: mongo
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      db:
+
+  redis:
+    image: redis:alpine
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      kv:
+
+  cockroach_master:
+    image: cockroachdb/cockroach
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      placement:
+        constraints:
+          - 'node.role == worker'
+    ports:
+      - 8090:8080
+    command: start --insecure
+    networks:
+      db:
+
+  cockroach_slave:
+    image: cockroachdb/cockroach
+    deploy:
+      labels:
+        com.docker.ucp.access.label: "/prod"
+      replicas: 2
+      placement:
+        constraints:
+          - 'node.role == worker'
+    command: start --insecure --join=cockroach_master
+    networks:
+      db:
+
+  whoami:
+    image: emilevauge/whoami
+    deploy:
+      replicas: 3
+      mode: replicated
+      labels:
+          com.docker.lb.hosts: whoami.dockr.life
+#          com.docker.lb.context_root: /whoami/
+          com.docker.lb.port: 80
+      placement:
+        constraints:
+          - 'node.role == worker'
+
+  visualizer:
+    image: dockersamples/visualizer
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == manager'
+      labels:
+          com.docker.lb.hosts: viz.dockr.life
+          com.docker.lb.port: 8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+networks:
+  kv:
+    labels:
+      com.docker.ucp.access.label: "/prod"
+  db:
+    labels:
+      com.docker.ucp.access.label: "/prod"
+    driver: overlay
+    driver_opts:
+      encrypted: ""
+
+secrets:
+  demo_title_v1:
+    external: true
+
+#configs:

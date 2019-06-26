@@ -24,9 +24,7 @@ services:
     environment:
       SPLUNK_START_ARGS: '--accept-license'
       SPLUNK_ENABLE_LISTEN: '9997'
-    volumes:
-      - /opt/splunk/etc/:/opt/splunk/etc/
-      - /opt/splunk/var/:/opt/splunk/var/
+      SPLUNK_PASSWORD: 'Pa22word'
     ports:
       - 9997:9997
       - 8000:8000

@@ -31,7 +31,8 @@ services:
           com.docker.ucp.access.label: "/prod"
           com.docker.lb.network: flask_kv
           com.docker.lb.hosts: app.dockr.life
-          com.docker.lb.sticky_session_cookie: session
+#          com.docker.lb.sticky_session_cookie: session
+#          com.docker.lb.backend_mode: vip
           com.docker.lb.context_root: /
           com.docker.lb.port: 5000
     ports:

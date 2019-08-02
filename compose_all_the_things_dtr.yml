@@ -70,6 +70,8 @@ services:
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
+        com.docker.lb.hosts: roach.dockr.life
+        com.docker.lb.port: 8080
       placement:
         constraints:
           - 'node.role == worker'

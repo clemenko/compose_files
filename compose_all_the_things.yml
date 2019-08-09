@@ -106,14 +106,14 @@ services:
           - 'node.role == worker'
 
   visualizer:
-    image: dockersamples/visualizer
+    image: mikesir87/swarm-viz
     deploy:
       placement:
         constraints:
           - 'node.role == manager'
       labels:
           com.docker.lb.hosts: viz.dockr.life
-          com.docker.lb.port: 8080
+          com.docker.lb.port: 3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 

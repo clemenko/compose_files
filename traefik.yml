@@ -1,7 +1,7 @@
-version: "3.2"
+version: "3.3"
 services:
   traefik:
-    image: traefik:1.5-alpine
+    image: traefik:2.0-alpine
     deploy:
       replicas: 1
       mode: replicated
@@ -13,7 +13,14 @@ services:
       - 8080:8080
     networks:
       inbound:
-    command: --docker --docker.swarmmode --docker.domain=app.dockr.life --docker.watch --web --web.metrics.prometheus --web.metrics.prometheus.buckets="0.1,0.3,1.2,5.0" --accesslogsfile=/dev/stdout
+    command:
+      #- "--log.level=DEBUG"
+      - "--api=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+#      - "-c /dev/null"
+#      - "--web.metrics.prometheus --web.metrics.prometheus.buckets='0.1,0.3,1.2,5.0'"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 

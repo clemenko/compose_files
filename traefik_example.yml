@@ -3,27 +3,30 @@ version: "3.7"
 services:
 
   traefik:
-    image: "traefik:v2.0.0-beta1"
+    image: "traefik:v2.0.0-rc1"
     deploy:
       placement:
         constraints:
           - 'node.role == manager'
     command:
-      #- "--log.level=DEBUG"
       - "--api=true"
-      - '--providers.docker.endpoint="unix:///var/run/docker.sock"'
+#      - '--providers.docker.endpoint="unix:///var/run/docker.sock"'
       - "--providers.docker.swarmMode=true"
-      - "--providers.docker.exposedbydefault=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--metrics.prometheus=true"
+      - "--accesslog=true"
     ports:
       - "80:80"
       - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+#    volumes:
+#     - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   whoami:
     image: "containous/whoami"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
+    deploy: ## With swarm mode labels have to be set on under deploy
+      labels:
+        - "traefik.enable=true" ## Need to be set if `--providers.docker.exposedbydefault` is set to false
+        - "traefik.http.routers.whoami.rule=Host(`whoami.dockr.life`)"
+        - "traefik.http.routers.whoami.entrypoints=web"
+        - "traefik.http.services.whoami.loadbalancer.server.port=80"

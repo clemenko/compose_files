@@ -3,17 +3,16 @@ version: "3.7"
 services:
 
   traefik:
-    image: "traefik:v2.0.0-beta1"
+    image: "traefik:v2.0.0-rc1" ## Change version to RC1
     deploy:
       placement:
         constraints:
           - 'node.role == manager'
     command:
-      #- "--log.level=DEBUG"
       - "--api=true"
-      - '--providers.docker.endpoint="unix:///var/run/docker.sock"'
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock" ## Not required
       - "--providers.docker.swarmMode=true"
-      - "--providers.docker.exposedbydefault=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
@@ -23,7 +22,10 @@ services:
 
   whoami:
     image: "containous/whoami"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
+    deploy: ## With swarm mode labels have to be set on under deploy
+      labels:
+        - "traefik.enable=true" ## Need to be set if `--providers.docker.exposedbydefault` is set to false
+        - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+        - "traefik.http.routers.whoami.entrypoints=web"
+        - "traefik.http.services.whoami.loadbalancer.server.port=80"
+        

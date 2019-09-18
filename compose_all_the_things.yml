@@ -33,6 +33,7 @@ services:
           com.docker.lb.hosts: app.dockr.life
  #         com.docker.lb.sticky_session_cookie: session
           com.docker.lb.context_root: /
+          com.docker.lb.context_root_rewrite: true
           com.docker.lb.port: 5000
     ports:
       - 5000:5000
@@ -70,6 +71,8 @@ services:
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
+        com.docker.lb.hosts: roach.dockr.life
+        com.docker.lb.port: 8080
       placement:
         constraints:
           - 'node.role == worker'
@@ -95,7 +98,7 @@ services:
   whoami:
     image: emilevauge/whoami
     deploy:
-      replicas: 3
+      replicas: 10
       mode: replicated
       labels:
           com.docker.lb.hosts: whoami.dockr.life
@@ -116,6 +119,8 @@ services:
           com.docker.lb.port: 3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3030:3000
 
 networks:
   kv:

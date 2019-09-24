@@ -33,7 +33,7 @@ services:
           com.docker.lb.hosts: app.dockr.life
  #         com.docker.lb.sticky_session_cookie: session
           com.docker.lb.context_root: /
-          com.docker.lb.context_root_rewrite: true
+#          com.docker.lb.context_root_rewrite: true
           com.docker.lb.port: 5000
     ports:
       - 5000:5000
@@ -67,7 +67,7 @@ services:
       kv:
 
   cockroach_master:
-    image: cockroachdb/cockroach
+    image: cockroachdb/cockroach:v19.1.4
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
@@ -83,11 +83,11 @@ services:
       db:
 
   cockroach_slave:
-    image: cockroachdb/cockroach
+    image: cockroachdb/cockroach:v19.1.4
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
-      replicas: 2
+      replicas: 4
       placement:
         constraints:
           - 'node.role == worker'
@@ -98,7 +98,7 @@ services:
   whoami:
     image: emilevauge/whoami
     deploy:
-      replicas: 10
+      replicas: 2
       mode: replicated
       labels:
           com.docker.lb.hosts: whoami.dockr.life

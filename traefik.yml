@@ -3,14 +3,16 @@ services:
   traefik:
     image: traefik:2.0-alpine
     deploy:
-      replicas: 1
-      mode: replicated
+      mode: global
       placement:
         constraints:
           - 'node.role == manager'
     ports:
       - 80:80
       - 8080:8080
+      - protocol: tcp
+      - mode: host
+      
     networks:
       inbound:
     command:

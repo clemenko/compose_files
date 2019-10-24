@@ -2,7 +2,7 @@ version: "3.4"
 
 x-updating:
   &parallel
-  parallelism: 1
+  parallelism: 2
   delay: 10s
   order: start-first
   failure_action: rollback
@@ -96,7 +96,7 @@ services:
       db:
 
   whoami:
-    image: emilevauge/whoami
+    image: containous/whoami
     deploy:
       replicas: 2
       mode: replicated

@@ -106,6 +106,8 @@ services:
       placement:
         constraints:
           - 'node.role == worker'
+    ports:
+      - 5001:80
 
   visualizer:
     image: mikesir87/swarm-viz
@@ -118,6 +120,8 @@ services:
           com.docker.lb.port: 3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3000:3000
 
 networks:
   kv:

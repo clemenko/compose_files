@@ -10,6 +10,8 @@ x-updating:
 services:
   app:
     image: clemenko/flask_demo
+    security_opt:
+      - no-new-privileges:true
     deploy:
       replicas: 4
       resources:
@@ -46,6 +48,8 @@ services:
 
   mongo:
     image: mongo
+    security_opt:
+      - no-new-privileges:true
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
@@ -57,6 +61,8 @@ services:
 
   redis:
     image: redis:alpine
+    security_opt:
+      - no-new-privileges:true
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
@@ -68,6 +74,8 @@ services:
 
   cockroach_master:
     image: cockroachdb/cockroach:v19.1.4
+    security_opt:
+      - no-new-privileges:true
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
@@ -84,6 +92,8 @@ services:
 
   cockroach_slave:
     image: cockroachdb/cockroach:v19.1.4
+    security_opt:
+      - no-new-privileges:true
     deploy:
       labels:
         com.docker.ucp.access.label: "/prod"
@@ -97,6 +107,8 @@ services:
 
   whoami:
     image: containous/whoami
+    security_opt:
+      - no-new-privileges:true
     deploy:
       replicas: 2
       mode: replicated
@@ -110,6 +122,8 @@ services:
 
   visualizer:
     image: mikesir87/swarm-viz
+    security_opt:
+      - no-new-privileges:true
     deploy:
       placement:
         constraints:
